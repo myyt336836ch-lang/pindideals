@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PindiDeals - Rawalpindi & Islamabad Deals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f8f9fa; color: #1e1e2f; padding-bottom: 80px; }
+        .max-w-md { max-width: 440px; margin: 0 auto; }
+        header { background-color: #1e1e2f; color: #ffffff; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header-inner { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .logo-box { background-color: #ff4757; color: #ffffff; width: 40px; height: 40px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,71,87,0.3); }
+        .search-box { padding: 0 16px 12px 16px; position: relative; }
+        .search-box input { width: 100%; background-color: #2f2f42; color: #ffffff; border: 1px solid #3f3f56; border-radius: 12px; padding: 12px 16px 12px 40px; font-size: 14px; outline: none; }
+        .search-box i { position: absolute; left: 28px; top: 14px; color: #9ca3af; }
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e5e7eb; z-index: 50; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .nav-inner { display: flex; justify-content: space-around; padding: 8px 0; max-width: 440px; margin: 0 auto; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #9ca3af; cursor: pointer; font-size: 10px; font-weight: 600; text-decoration: none; }
+        .nav-item.active { color: #ff4757; }
+        .nav-item i { font-size: 18px; margin-bottom: 4px; }
+        .post-btn-wrapper { background: #ff4757; color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -16px; box-shadow: 0 4px 10px rgba(255,71,87,0.4); }
+        main { padding: 16px; min-height: 80vh; }
+        .banner { background: linear-gradient(135deg, #ff4757, #e81cff); border-radius: 16px; padding: 20px; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(255,71,87,0.2); position: relative; overflow: hidden; }
+        .banner h2 { font-size: 22px; font-weight: 800; margin-top: 8px; }
+        .banner p { font-size: 12px; opacity: 0.9; margin-top: 4px; max-width: 220px; }
+        .banner button { background: #fff; color: #ff4757; border: none; font-weight: 700; font-size: 12px; padding: 8px 16px; border-radius: 10px; margin-top: 14px; cursor: pointer; }
+        .section-title { font-size: 14px; font-weight: 700; color: #1e1e2f; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .categories-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; }
+        .categories-scroll::-webkit-scrollbar { display: none; }
+        .cat-pill { background: #fff; border: 1px solid #e5e7eb; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #4b5563; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .cat-pill.active { background: #1e1e2f; color: #fff; border-color: #1e1e2f; }
+        .deal-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
+        .deal-img-wrapper { position: relative; height: 180px; background: #eee; cursor: pointer; overflow: hidden; }
+        .deal-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        .deal-badge { position: absolute; top: 12px; left: 12px; background: #ff4757; color: #fff; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; z-index: 2; }
+        .save-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #374151; z-index: 2; }
+        .delete-btn { position: absolute; top: 52px; right: 12px; background: rgba(239, 68, 68, 0.9); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; z-index: 2; }
+        .city-tag { position: absolute; bottom: 12px; left: 12px; background: rgba(30,30,47,0.7); backdrop-filter: blur(4px); color: #fff; font-size: 10px; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px; z-index: 2; }
+        .deal-body { padding: 16px; }
+        .deal-brand { font-size: 10px; font-weight: 700; color: #ff4757; text-transform: uppercase; margin-bottom: 4px; }
+        .deal-title { font-size: 14px; font-weight: 700; color: #1e1e2f; line-height: 1.4; }
+        .deal-location { font-size: 12px; color: #6b7280; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        .deal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f3f4f6; }
+        .old-price { font-size: 12px; color: #9ca3af; text-decoration: line-through; }
+        .new-price { font-size: 16px; font-weight: 800; color: #1e1e2f; margin-left: 6px; }
+        .whatsapp-btn { background: #22c55e; color: #fff; border: none; font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+        .modal-content { background: #fff; border-radius: 16px; width: 100%; max-width: 340px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .hidden { display: none !important; }
+        .preview-thumbs { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; }
+        .thumb-box { position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; flex-shrink: 0; }
+        .thumb-box img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="max-w-md header-inner">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="logo-box">PD</div>
+                <div>
+                    <h1 style="font-size: 16px; font-weight: 700; line-height: 1.2;">PindiDeals</h1>
+                    <div style="font-size: 11px; color: #d1d5db; display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-location-dot" style="color: #ff4757;"></i>
+                        <span id="currentLocationName">Rawalpindi / Islamabad</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="openCitySelector()" style="background: #2f2f42; color: #fff; border: 1px solid #3f3f56; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-earth-asia" style="color: #ff4757;"></i>
+                <span id="selectedCityBadge">Twin Cities</span>
+            </button>
+        </div>
+        <div class="max-w-md search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search restaurants, clothing, electronics...">
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-md" id="appMainContainer">
+        <!-- Views rendered dynamically -->
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav>
+        <div class="max-w-md nav-inner">
+            <button onclick="switchView('home')" id="nav-home" class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="switchView('explore')" id="nav-explore" class="nav-item">
+                <i class="fa-solid fa-compass"></i>
+                <span>Explore</span>
+            </button>
+            <button onclick="switchView('post')" id="nav-post" class="nav-item">
+                <div class="post-btn-wrapper">
+                    <i class="fa-solid fa-plus" style="font-size: 14px; margin:0;"></i>
+                </div>
+                <span style="margin-top: 4px;">Post Deal</span>
+            </button>
+            <button onclick="switchView('saved')" id="nav-saved" class="nav-item">
+                <i class="fa-solid fa-bookmark"></i>
+                <span>Saved</span>
+            </button>
+            <button onclick="switchView('profile')" id="nav-profile" class="nav-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+    </nav>
+    <!-- City Selector Modal -->
+    <div id="cityModal" class="modal-bg hidden">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 16px; font-weight: 700;">Select Region</h3>
+                <button onclick="closeCitySelector()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #9ca3af;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button onclick="setCity('All Twin Cities')" style="width: 100%; text-align: left; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Rawalpindi & Islamabad (All)</button>
+                <button onclick="setCity('Rawalpindi')" style="width: 100%; text-align: left; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Rawalpindi Only</button>
+                <button onclick="setCity('Islamabad')" style="width: 100%; text-align: left; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Islamabad Only</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // LIVE FIREBASE CONFIGURATION (PindiDeals)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBC4u1DowClrmBFPCOh783K0xYkWJrFc",
+            authDomain: "pindideals-6b74e.firebaseapp.com",
+            databaseURL: "https://pindideals-6b74e-default-rtdb.firebaseio.com",
+            projectId: "pindideals-6b74e",
+            storageBucket: "pindideals-6b74e.appspot.com",
+            messagingSenderId: "937141337218",
+            appId: "1:937141337218:web:0e5sec217457ebd92f1c89b"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let currentView = 'home';
+        let selectedCity = 'All Twin Cities';
+        let selectedCategory = 'All';
+        let searchQuery = '';
+        let deals = [];
+        let savedDealIds = JSON.parse(localStorage.getItem('pindideals_saved') || '[]');
+
+        let uploadedImagesBase64 = [];
+        let currentImageFit = 'cover';
+
+        const defaultDeals = [
+            {
+                id: 'deal_1',
+                title: 'Zinger Burger + Large Fries + Drink',
+                brand: 'The Burger Company',
+                category: 'Food',
+                city: 'Rawalpindi',
+                location: 'Commercial Market, Rwp',
+                price: '499',
+                originalPrice: '850',
+                discount: '41% OFF',
+                whatsapp: '923001234567',
+                images: ['https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80'],
+                imageFit: 'cover'
+            },
+            {
+                id: 'deal_2',
+                title: 'Flat 50% Off on Winter Collection',
+                brand: 'Outfitters',
+                category: 'Clothing',
+                city: 'Islamabad',
+                location: 'Centaurus Mall, Isb',
+                price: '1500',
+                originalPrice: '3000',
+                discount: '50% OFF',
+                whatsapp: '923119876543',
+                images: ['https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=600&q=80'],
+                imageFit: 'cover'
+            }
+        ];
+        function fetchDeals() {
+            db.ref('deals').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    deals = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                } else {
+                    deals = defaultDeals;
+                }
+                renderApp();
+            }, (error) => {
+                console.error(error);
+                deals = defaultDeals;
+                renderApp();
+            });
+        }
+
+        function switchView(viewName) {
+            currentView = viewName;
+            ['home', 'explore', 'post', 'saved', 'profile'].forEach(v => {
+                const el = document.getElementById(`nav-${v}`);
+                if(el) {
+                    if(v === viewName) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+            renderApp();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function renderApp() {
+            const container = document.getElementById('appMainContainer');
+            if(!container) return;
+
+            if (currentView === 'home') container.innerHTML = renderHomeView();
+            else if (currentView === 'explore') container.innerHTML = renderExploreView();
+            else if (currentView === 'post') container.innerHTML = renderPostView();
+            else if (currentView === 'saved') container.innerHTML = renderSavedView();
+            else if (currentView === 'profile') container.innerHTML = renderProfileView();
+        }
+
+        function renderHomeView() {
+            let filtered = filterDeals();
+            return `
+                <div class="banner">
+                    <span style="background: rgba(255,255,255,0.2); font-size: 10px; padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase;">Hot Deals Today</span>
+                    <h2>Save Big in Pindi & Isb!</h2>
+                    <p>Discover verified discounts & food specials near you.</p>
+                    <button onclick="switchView('explore')">Explore All Deals</button>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <div class="section-title">
+                        <span>Categories</span>
+                        <span style="color: #ff4757; font-size: 11px; cursor: pointer;" onclick="switchView('explore')">See All</span>
+                    </div>
+                    <div class="categories-scroll">${renderCategoryPills()}</div>
+                </div>
+                <div>
+                    <div class="section-title"><span>Trending Deals (${filtered.length})</span></div>
+                    <div>${filtered.length > 0 ? filtered.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #6b7280; font-size: 12px; padding: 20px;">No deals found.</p>'}</div>
+                </div>
+            `;
+        }
+        function renderCategoryPills() {
+            const cats = ['All', 'Food', 'Clothing', 'Electronics', 'Beauty', 'Groceries'];
+            return cats.map(cat => `
+                <div onclick="setCategory('${cat}')" class="cat-pill ${selectedCategory === cat ? 'active' : ''}">
+                    ${cat}
+                </div>
+            `).join('');
+        }
+
+        function renderDealCard(deal) {
+            const isSaved = savedDealIds.includes(deal.id);
+            const imgList = deal.images || [deal.image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80'];
+            const fitStyle = deal.imageFit || 'cover';
+            
+            return `
+                <div class="deal-card">
+                    <div class="deal-img-wrapper" id="slider-${deal.id}" data-index="0" data-fit="${fitStyle}">
+                        <img src="${imgList[0]}" id="main-img-${deal.id}" style="object-fit: ${fitStyle};" alt="${deal.title}">
+                        <div class="deal-badge">${deal.discount || 'Special'}</div>
+                        <button onclick="toggleSaveDeal('${deal.id}')" class="save-btn">
+                            <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark" style="color: ${isSaved ? '#ff4757' : '#374151'}; font-size: 12px;"></i>
+                        </button>
+                        ${deal.id.startsWith('deal_') ? '' : `
+                        <button onclick="deleteDeal('${deal.id}')" class="delete-btn" title="Delete Deal">
+                            <i class="fa-solid fa-trash" style="font-size: 11px;"></i>
+                        </button>`}
+                        ${imgList.length > 1 ? `
+                        <button onclick="nextSlide('${deal.id}',${JSON.stringify(imgList).replace(/"/g, '&quot;')})" style="position: absolute; right: 12px; bottom: 12px; background: rgba(0,0,0,0.6); color: #fff; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; z-index: 2;">
+                            <i class="fa-solid fa-images"></i> +${imgList.length - 1}
+                        </button>` : ''}
+                        <div class="city-tag">
+                            <i class="fa-solid fa-location-dot" style="color: #ff4757;"></i>
+                            <span>${deal.city || 'Rawalpindi'}</span>
+                        </div>
+                    </div>
+                    <div class="deal-body">
+                        <div class="deal-brand">${deal.brand || 'Local Merchant'}</div>
+                        <h4 class="deal-title">${deal.title}</h4>
+                        <div class="deal-location">
+                            <i class="fa-solid fa-map-pin" style="color: #9ca3af;"></i>
+                            <span>${deal.location || 'Twin Cities'}</span>
+                        </div>
+                        <div class="deal-footer">
+                            <div>
+                                <span class="old-price">Rs ${deal.originalPrice || '1000'}</span>
+                                <span class="new-price">Rs ${deal.price || '500'}</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="https://wa.me/${deal.whatsapp || '923001234567'}?text=Hi,%20I%20found%20your%20deal%20on%20PindiDeals:%20${encodeURIComponent(deal.title)}" target="_blank" class="whatsapp-btn">
+                                    <i class="fa-brands fa-whatsapp"><span>Chat</span></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPostView() {
+            return `
+                <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 4px;">Post a New Deal</h3>
+                    <p style="font-size: 12px; color: #6b7280; margin-bottom: 16px;">Add up to 3 images and adjust them nicely before publishing.</p>
+                    <form onsubmit="handlePostDealSubmit(event)" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Deal Title *</label>
+                            <input type="text" id="postTitle" required placeholder="e.g. 3 Large Pizzas for Rs 1999" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Brand / Business *</label>
+                                <input type="text" id="postBrand" required placeholder="Store Name" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Category *</label>
+                                <select id="postCategory" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none; background: #fff;">
+                                    <option value="Food">Food</option>
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Beauty">Beauty</option>
+                                    <option value="Groceries">Groceries</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">City *</label>
+                                <select id="postCity" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none; background: #fff;">
+                                    <option value="Rawalpindi">Rawalpindi</option>
+                                    <option value="Islamabad">Islamabad</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Location / Area *</label>
+                                <input type="text" id="postLocation" required placeholder="Saddar, F-7" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Price *</label>
+                                <input type="number" id="postPrice" required placeholder="499" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Original *</label>
+                                <input type="number" id="postOriginalPrice" required placeholder="999" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">Discount *</label>
+                                <input type="text" id="postDiscount" required placeholder="50% OFF" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; font-weight: 600; color: #374151; display: block; margin-bottom: 4px;">WhatsApp Number *</label>
+                            <input type="text" id="postWhatsapp" required placeholder="923001234567" style="width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 12px; outline: none;">
+                        </div>
+                        
+                        <!-- Multiple Images Upload & Adjustment Section (Fixed) -->
+                        <div style="background: #f9fafb; padding: 12px; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                            <label style="font-size: 11px; font-weight: 700; color: #374151; display: block; margin-bottom: 6px;">Upload Photos (Max 3 Images)</label>
+                            <input type="file" accept="image/*" multiple onchange="handleMultipleImages(event)" style="font-size: 11px; color: #6b7280; width: 100%;">
+                            
+                            <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 10px; font-weight: 600; color: #4b5563;">Image Fitting Style:</span>
+                                <select id="fitSelector" onchange="currentImageFit = this.value; updateThumbnailsUI();" style="font-size: 11px; padding: 4px; border-radius: 6px; border: 1px solid #ccc;">
+                                    <option value="cover">Fill Box (Cover)</option>
+                                    <option value="contain">Full Image (Contain)</option>
+                                </select>
+                            </div>
+                            <div class="preview-thumbs" id="previewThumbsContainer">
+                                <span style="font-size: 10px; color: #9ca3af;">No images chosen yet</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" style="width: 100%; background: #ff4757; color: #fff; border: none; font-weight: 700; font-size: 12px; padding: 12px; border-radius: 12px; cursor: pointer; margin-top: 8px;">Publish Live Deal</button>
+                    </form>
+                </div>
+            `;
+        }
+        function renderExploreView() {
+            let filtered = filterDeals();
+            return `
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Explore All Deals</h3>
+                    <p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">Browse active promotions across Rawalpindi and Islamabad.</p>
+                    <div class="categories-scroll">${renderCategoryPills()}</div>
+                    <div>${filtered.length > 0 ? filtered.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #6b7280; font-size: 12px; padding: 20px;">No deals found.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderSavedView() {
+            let savedDeals = deals.filter(d => savedDealIds.includes(d.id));
+            return `
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Saved Deals</h3>
+                    <p style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">Your bookmarked offers for later.</p>
+                    <div>${savedDeals.length > 0 ? savedDeals.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #6b7280; font-size: 12px; padding: 40px;">No saved deals yet.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderProfileView() {
+            return `
+                <div style="background: #fff; border: 1px solid #f0f0f0; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px;">
+                    <div style="width: 60px; height: 60px; background: rgba(255,71,87,0.1); color: #ff4757; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-size: 20px; font-weight: 800;">PD</div>
+                    <h3 style="font-size: 16px; font-weight: 700;">PindiDeals Member</h3>
+                    <p style="font-size: 11px; color: #6b7280; margin-top: 2px;">Rawalpindi & Islamabad Hub</p>
+                    <div style="display: flex; justify-content: space-around; margin-top: 16px; padding-top: 16px; border-top: 1px solid #f3f4f6;">
+                        <div>
+                            <span style="display: block; font-size: 16px; font-weight: 700;">${savedDealIds.length}</span>
+                            <span style="font-size: 10px; color: #9ca3af;">Saved</span>
+                        </div>
+                        <div>
+                            <span style="display: block; font-size: 16px; font-weight: 700;">${deals.length}</span>
+                            <span style="font-size: 10px; color: #9ca3af;">Live Deals</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function filterDeals() {
+            return deals.filter(deal => {
+                const matchesCity = selectedCity === 'All Twin Cities' || deal.city === selectedCity;
+                const matchesCat = selectedCategory === 'All' || deal.category === selectedCategory;
+                const matchesSearch = searchQuery === '' || deal.title.toLowerCase().includes(searchQuery.toLowerCase()) || deal.brand.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCity && matchesCat && matchesSearch;
+            });
+        }
+
+        function setCity(city) {
+            selectedCity = city;
+            document.getElementById('selectedCityBadge').innerText = city;
+            document.getElementById('currentLocationName').innerText = city === 'All Twin Cities' ? 'Rawalpindi / Islamabad' : city;
+            closeCitySelector();
+            renderApp();
+        }
+
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderApp();
+        }
+
+        function handleSearch(query) {
+            searchQuery = query;
+            renderApp();
+        }
+
+        function openCitySelector() { document.getElementById('cityModal').classList.remove('hidden'); }
+        function closeCitySelector() { document.getElementById('cityModal').classList.add('hidden'); }
+
+        function toggleSaveDeal(id) {
+            if (savedDealIds.includes(id)) {
+                savedDealIds = savedDealIds.filter(i => i !== id);
+            } else {
+                savedDealIds.push(id);
+            }
+            localStorage.setItem('pindideals_saved', JSON.stringify(savedDealIds));
+            renderApp();
+        }
+
+        function nextSlide(dealId, imgList) {
+            const imgEl = document.getElementById(`main-img-${dealId}`);
+            let wrapper = document.getElementById(`slider-${dealId}`);
+            let currIdx = parseInt(wrapper.getAttribute('data-index') || 0);
+            currIdx = (currIdx + 1) % imgList.length;
+            wrapper.setAttribute('data-index', currIdx);
+            imgEl.src = imgList[currIdx];
+        }
+
+        function deleteDeal(id) {
+            if (confirm('Kya aap waqai is deal ko delete karna chahte hain?')) {
+                db.ref('deals/' + id).remove().then(() => {
+                    alert('Deal kamyabi ke sath delete ho gayi hai!');
+                }).catch(error => {
+                    alert('Error: ' + error.message);
+                });
+            }
+        }
+
+        function handleMultipleImages(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            if (uploadedImagesBase64.length >= 3) {
+                alert('Aap maximum 3 images hi upload kar sakte hain!');
+                return;
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                if (uploadedImagesBase64.length < 3) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImagesBase64.push(e.target.result);
+                        updateThumbnailsUI();
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+            }
+            event.target.value = '';
+        }
+
+        function updateThumbnailsUI() {
+            const container = document.getElementById('previewThumbsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (uploadedImagesBase64.length === 0) {
+                container.innerHTML = '<span style="font-size: 10px; color: #9ca3af;">No images chosen yet</span>';
+                return;
+            }
+
+            uploadedImagesBase64.forEach((imgSrc, index) => {
+                container.innerHTML += `
+                    <div class="thumb-box" style="position: relative; display: inline-block; margin-right: 6px;">
+                        <img src="${imgSrc}" style="object-fit: ${currentImageFit}; width: 60px; height: 60px; border-radius: 8px;">
+                        <button type="button" onclick="removeImage(${index})" style="position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">×</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeImage(index) {
+            uploadedImagesBase64.splice(index, 1);
+            updateThumbnailsUI();
+        }
+
+        function handlePostDealSubmit(event) {
+            event.preventDefault();
+            const finalImages = uploadedImagesBase64.length > 0 ? uploadedImagesBase64 : ['https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80'];
+
+            const newDeal = {
+                title: document.getElementById('postTitle').value,
+                brand: document.getElementById('postBrand').value,
+                category: document.getElementById('postCategory').value,
+                city: document.getElementById('postCity').value,
+                location: document.getElementById('postLocation').value,
+                price: document.getElementById('postPrice').value,
+                originalPrice: document.getElementById('postOriginalPrice').value,
+                discount: document.getElementById('postDiscount').value,
+                whatsapp: document.getElementById('postWhatsapp').value,
+                images: finalImages,
+                imageFit: currentImageFit,
+                createdAt: Date.now()
+            };
+
+            db.ref('deals').push(newDeal).then(() => {
+                alert('Mubarak ho! Aapka deal live Firebase par publish ho gaya hai!');
+                uploadedImagesBase64 = [];
+                switchView('home');
+            }).catch(error => {
+                alert('Error: ' + error.message);
+            });
+        }
+
+        window.onload = function() {
+            fetchDeals();
+        };
+    </script>
+</body>
+</html>
