@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PindiDeals - Rawalpindi & Islamabad Deals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #12121a; color: #f3f4f6; padding-bottom: 80px; }
+        .max-w-md { max-width: 440px; margin: 0 auto; }
+        .hidden { display: none !important; }
+        header { background-color: #1a1a24; color: #ffffff; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #2a2a3c; }
+        .header-inner { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .logo-box { background-color: #ff4757; color: #ffffff; width: 40px; height: 40px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,71,87,0.3); }
+        .search-box { padding: 0 16px 12px 16px; position: relative; }
+        .search-box input { width: 100%; background-color: #222232; color: #ffffff; border: 1px solid #323248; border-radius: 12px; padding: 12px 16px 12px 40px; font-size: 14px; outline: none; }
+        .search-box input::placeholder { color: #8a8aa3; }
+        .search-box i { position: absolute; left: 28px; top: 14px; color: #8a8aa3; }
+        
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a24; border-top: 1px solid #2a2a3c; z-index: 50; }
+        .nav-inner { display: flex; justify-content: space-around; padding: 8px 0; max-width: 440px; margin: 0 auto; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #8a8aa3; cursor: pointer; font-size: 10px; font-weight: 600; text-decoration: none; }
+        .nav-item.active { color: #ff4757; }
+        .nav-item i { font-size: 18px; margin-bottom: 4px; }
+        .post-btn-wrapper { background: #ff4757; color: #fff; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -16px; box-shadow: 0 4px 10px rgba(255,71,87,0.4); }
+        main { padding: 16px; min-height: 80vh; }
+        .sponsored-section { background: linear-gradient(135deg, #1f1f2e, #2a1b3d); border: 1px solid #4a386b; border-radius: 16px; padding: 16px; color: #fff; margin-bottom: 20px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+        .sponsored-badge { background: #ff4757; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; display: inline-block; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .section-title { font-size: 14px; font-weight: 700; color: #f3f4f6; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .categories-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; }
+        .categories-scroll::-webkit-scrollbar { display: none; }
+        .cat-pill { background: #1a1a24; border: 1px solid #2a2a3c; padding: 8px 16px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #a1a1aa; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .cat-pill.active { background: #ff4757; color: #fff; border-color: #ff4757; }
+        .deal-card { background: #1a1a24; border: 1px solid #2a2a3c; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; }
+        .deal-img-wrapper { position: relative; height: 220px; background: #222232; overflow: hidden; }
+        .deal-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: none; cursor: pointer; }
+        .deal-img-wrapper img.active { display: block; }
+        .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; font-size: 12px; }
+        .slider-arrow.prev { left: 8px; }
+        .slider-arrow.next { right: 8px; }
+        .slider-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 5px; z-index: 5; pointer-events: none; }
+        .slider-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+        .slider-dot.active { background: #ff4757; width: 16px; border-radius: 3px; }
+        .deal-badge { position: absolute; top: 12px; left: 12px; background: #ff4757; color: #fff; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; z-index: 6; }
+        .save-btn { position: absolute; top: 12px; right: 50px; background: rgba(26,26,36,0.8); backdrop-filter: blur(4px); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; z-index: 6; }
+        .dots-btn { position: absolute; top: 12px; right: 12px; background: rgba(26,26,36,0.8); backdrop-filter: blur(4px); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; z-index: 6; }
+        .card-menu-dropdown { position: absolute; top: 50px; right: 12px; background: #222232; border: 1px solid #323248; border-radius: 10px; padding: 6px; z-index: 10; width: 120px; box-shadow: 0 10px 15px rgba(0,0,0,0.5); display: none; }
+        .card-menu-dropdown.show { display: block; }
+        .menu-item { width: 100%; background: none; border: none; color: #fff; font-size: 11px; padding: 8px; text-align: left; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .menu-item:hover { background: #2a2a3c; }
+        .menu-item.del { color: #ef4444; }
+        .city-tag { position: absolute; bottom: 12px; left: 12px; background: rgba(18,18,26,0.8); backdrop-filter: blur(4px); color: #fff; font-size: 10px; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px; z-index: 5; border: 1px solid rgba(255,255,255,0.1); }
+        .deal-body { padding: 16px; }
+        .deal-brand { font-size: 10px; font-weight: 700; color: #ff4757; text-transform: uppercase; margin-bottom: 4px; }
+        .deal-title { font-size: 14px; font-weight: 700; color: #f3f4f6; line-height: 1.4; }
+        .deal-location { font-size: 12px; color: #a1a1aa; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        .deal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2a2a3c; }
+        .old-price { font-size: 12px; color: #71717a; text-decoration: line-through; }
+        .new-price { font-size: 16px; font-weight: 800; color: #f3f4f6; margin-left: 6px; }
+        .whatsapp-btn { background: #22c55e; color: #fff; border: none; font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 10px; display: flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; }
+        .insta-box { background: #1a1a24; border: 1px solid #2a2a3c; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .insta-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #2a2a3c; margin-bottom: 16px; }
+        .insta-input { width: 100%; background: #222232; border: 1px solid #323248; border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 13px; outline: none; margin-bottom: 4px; }
+        .insta-input::placeholder { color: #71717a; }
+        .insta-label { font-size: 11px; font-weight: 600; color: #a1a1aa; display: block; margin-bottom: 4px; }
+        .profile-card { background: #1a1a24; border: 1px solid #2a2a3c; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 20px; }
+        .profile-avatar { width: 70px; height: 70px; background: #ff4757; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-size: 24px; font-weight: 800; box-shadow: 0 4px 15px rgba(255,71,87,0.4); }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+        .modal-content { background: #1a1a24; border: 1px solid #2a2a3c; border-radius: 16px; width: 100%; max-width: 360px; padding: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); color: #fff; }
+        #zoomModal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
+        #zoomModal img { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="max-w-md header-inner">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="logo-box">PD</div>
+                <div>
+                    <h1 style="font-size: 16px; font-weight: 700; line-height: 1.2;">PindiDeals</h1>
+                    <div style="font-size: 11px; color: #a1a1aa; display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-location-dot" style="color: #ff4757;"></i>
+                        <span id="currentLocationName">Rawalpindi / Islamabad</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="openCitySelector()" style="background: #222232; color: #fff; border: 1px solid #323248; padding: 6px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-earth-asia" style="color: #ff4757;"></i>
+                <span id="selectedCityBadge">Twin Cities</span>
+            </button>
+        </div>
+        <div class="max-w-md search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search food, fashion, electronics...">
+        </div>
+    </header>
+
+    <main class="max-w-md" id="appMainContainer">
+        <!-- Dynamic Views -->
+    </main>
+    <nav>
+        <div class="max-w-md nav-inner">
+            <button onclick="switchView('home')" id="nav-home" class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="switchView('explore')" id="nav-explore" class="nav-item">
+                <i class="fa-solid fa-compass"></i>
+                <span>Explore</span>
+            </button>
+            <button onclick="switchView('post')" id="nav-post" class="nav-item">
+                <div class="post-btn-wrapper">
+                    <i class="fa-solid fa-plus" style="font-size: 14px; margin:0;"></i>
+                </div>
+                <span style="margin-top: 4px;">Post Deal</span>
+            </button>
+            <button onclick="switchView('saved')" id="nav-saved" class="nav-item">
+                <i class="fa-solid fa-bookmark"></i>
+                <span>Saved</span>
+            </button>
+            <button onclick="switchView('profile')" id="nav-profile" class="nav-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="cityModal" class="modal-bg hidden">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 16px; font-weight: 700;">Select Region</h3>
+                <button onclick="closeCitySelector()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #a1a1aa;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button onclick="setCity('All Twin Cities')" style="width: 100%; text-align: left; padding: 12px; background: #222232; border: 1px solid #323248; color:#fff; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Rawalpindi & Islamabad (All)</button>
+                <button onclick="setCity('Rawalpindi')" style="width: 100%; text-align: left; padding: 12px; background: #222232; border: 1px solid #323248; color:#fff; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Rawalpindi Only</button>
+                <button onclick="setCity('Islamabad')" style="width: 100%; text-align: left; padding: 12px; background: #222232; border: 1px solid #323248; color:#fff; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer;">Islamabad Only</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EasyPaisa Paid Top Deal Payment Modal -->
+    <div id="paymentModal" class="modal-bg hidden">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 15px; font-weight: 700; color: #22c55e;"><i class="fa-solid fa-crown"></i> Boost to Top Deal</h3>
+                <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #a1a1aa;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 12px; line-height: 1.4;">7 din tak apni deal ko sabse upar Sponsored Banner par dikhayein (Rs. 1,000).</p>
+            
+            <div style="background: #222232; padding: 12px; border-radius: 10px; border: 1px solid #323248; margin-bottom: 12px;">
+                <div style="font-size: 11px; color: #a1a1aa;">EasyPaisa Account:</div>
+                <div style="font-size: 14px; font-weight: 700; color: #22c55e; margin-bottom: 4px;">0300-1234567</div>
+                <div style="font-size: 11px; color: #a1a1aa;">Account Title:</div>
+                <div style="font-size: 13px; font-weight: 600; color: #fff;">Muhammad Ali (PindiDeals)</div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="https://easypaisa.com.pk" target="_blank" style="background: #0ea5e9; color: #fff; text-align: center; text-decoration: none; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700;">
+                    <i class="fa-solid fa-wallet"></i> Open EasyPaisa App to Pay Rs 1,000
+                </a>
+                <div>
+                    <label class="insta-label">Enter Transaction ID (TID) *</label>
+                    <input type="text" id="paymentTidInput" class="insta-input" placeholder="e.g. 9876543210">
+                </div>
+                <button onclick="confirmPaidTopDeal()" style="background: #22c55e; color: #fff; border: none; font-weight: 700; font-size: 13px; padding: 12px; border-radius: 10px; cursor: pointer;">Verify & Post Top Deal</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="zoomModal" class="hidden" onclick="closeZoomModal()">
+        <img id="zoomedImg" src="" alt="Zoomed Deal Image">
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBC4u1DowClrmBFPCOh783K0xYkWJrFc",
+            authDomain: "pindideals-6b74e.firebaseapp.com",
+            databaseURL: "https://pindideals-6b74e-default-rtdb.firebaseio.com",
+            projectId: "pindideals-6b74e",
+            storageBucket: "pindideals-6b74e.appspot.com",
+            messagingSenderId: "937141337218",
+            appId: "1:937141337218:web:0e5sec217457ebd92f1c89b"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        let currentView = 'home';
+        let selectedCity = 'All Twin Cities';
+        let selectedCategory = 'All';
+        let searchQuery = '';
+        
+        let defaultDeals = [
+            {
+                id: 'deal_1',
+                title: 'Zinger Burger + Large Fries + Drink',
+                brand: 'The Burger Company',
+                category: 'Food',
+                city: 'Rawalpindi',
+                location: 'Commercial Market, Rwp',
+                price: '499',
+                originalPrice: '850',
+                discount: '41% OFF',
+                whatsapp: '923001234567',
+                pin: '1234',
+                images: ['https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80'],
+                isFeatured: true
+            }
+        ];
+
+        let deals = JSON.parse(localStorage.getItem('pindideals_cache') || 'null') || defaultDeals;
+        let savedDealIds = JSON.parse(localStorage.getItem('pindideals_saved') || '[]');
+
+        let uploadedImagesBase64 = [];
+        let previewIndex = 0;
+        let pendingDealData = null;
+        function fetchDeals() {
+            db.ref('deals').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    deals = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                    localStorage.setItem('pindideals_cache', JSON.stringify(deals));
+                } else {
+                    deals = defaultDeals;
+                }
+                renderApp();
+            }, (error) => {
+                console.error(error);
+                renderApp();
+            });
+        }
+
+        function switchView(viewName) {
+            currentView = viewName;
+            ['home', 'explore', 'post', 'saved', 'profile'].forEach(v => {
+                const el = document.getElementById(`nav-${v}`);
+                if(el) {
+                    if(v === viewName) el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+            renderApp();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function renderApp() {
+            const container = document.getElementById('appMainContainer');
+            if(!container) return;
+
+            if (currentView === 'home') container.innerHTML = renderHomeView();
+            else if (currentView === 'explore') container.innerHTML = renderExploreView();
+            else if (currentView === 'post') container.innerHTML = renderPostView();
+            else if (currentView === 'saved') container.innerHTML = renderSavedView();
+            else if (currentView === 'profile') container.innerHTML = renderProfileView();
+        }
+
+        function renderHomeView() {
+            let filtered = filterDeals().filter(d => !d.isFeatured);
+            let featuredDeals = deals.filter(d => d.isFeatured === true);
+
+            return `
+                ${featuredDeals.length > 0 ? `
+                    <div class="sponsored-section">
+                        <span class="sponsored-badge"><i class="fa-solid fa-crown"></i> Sponsored Feature</span>
+                        <h2 style="font-size: 17px; font-weight: 800; margin-top: 4px;">${featuredDeals[0].title}</h2>
+                        <p style="font-size: 11px; color: #d4d4d8; margin-top: 2px;">${featuredDeals[0].brand} •${featuredDeals[0].location}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                            <span style="font-weight: 800; font-size: 15px; color: #ff4757;">Rs ${featuredDeals[0].price}</span>
+                            <a href="https://wa.me/${featuredDeals[0].whatsapp}?text=Hi,%20I%20saw%20your%20Sponsored%20Deal%20on%20PindiDeals" target="_blank" style="background: #22c55e; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none;">Claim Offer</a>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div style="margin-bottom: 20px;">
+                    <div class="section-title">
+                        <span>Categories</span>
+                        <span style="color: #ff4757; font-size: 11px; cursor: pointer;" onclick="switchView('explore')">See All</span>
+                    </div>
+                    <div class="categories-scroll">${renderCategoryPills()}</div>
+                </div>
+
+                <div>
+                    <div class="section-title"><span>Community Deals (${filtered.length})</span></div>
+                    <div>${filtered.length > 0 ? filtered.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #71717a; font-size: 12px; padding: 20px;">No regular deals found.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderCategoryPills() {
+            const cats = ['All', 'Food', 'Fashion', 'Electronics'];
+            return cats.map(cat => `
+                <div onclick="setCategory('${cat}')" class="cat-pill ${selectedCategory === cat ? 'active' : ''}">
+                    ${cat}
+                </div>
+            `).join('');
+        }
+        function renderDealCard(deal) {
+            const isSaved = savedDealIds.includes(deal.id);
+            const imgList = deal.images || [deal.image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80'];
+            
+            let imagesHtml = '';
+            let dotsHtml = '';
+            
+            imgList.forEach((img, idx) => {
+                imagesHtml += `<img src="${img}" class="${idx === 0 ? 'active' : ''}" id="card-img-${deal.id}-${idx}" onclick="openZoomModal('${img}')" alt="${deal.title}">`;
+                dotsHtml += `<div class="slider-dot ${idx === 0 ? 'active' : ''}" id="dot-${deal.id}-${idx}"></div>`;
+            });
+
+            const showArrows = imgList.length > 1;
+
+            return `
+                <div class="deal-card">
+                    <div class="deal-img-wrapper" id="slider-wrapper-${deal.id}" data-index="0" data-total="${imgList.length}">
+                        ${imagesHtml}
+                        <div class="deal-badge">${deal.discount || 'Special'}</div>
+                        
+                        ${showArrows ? `
+                            <button onclick="moveSlider('${deal.id}', -1, event)" class="slider-arrow prev"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button onclick="moveSlider('${deal.id}', 1, event)" class="slider-arrow next"><i class="fa-solid fa-chevron-right"></i></button>
+                            <div class="slider-dots">${dotsHtml}</div>
+                        ` : ''}
+                        
+                        <button onclick="toggleSaveDeal('${deal.id}')" class="save-btn" title="Save Deal">
+                            <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark" style="color: ${isSaved ? '#ff4757' : '#fff'}; font-size: 12px;"></i>
+                        </button>
+
+                        <button onclick="toggleCardMenu('${deal.id}', event)" class="dots-btn" title="Options">
+                            <i class="fa-solid fa-ellipsis-vertical" style="font-size: 13px;"></i>
+                        </button>
+                        
+                        <div id="menu-${deal.id}" class="card-menu-dropdown">
+                            <button onclick="fastHandleAction('edit', '${deal.id}')" class="menu-item"><i class="fa-solid fa-pen"></i> Edit Deal</button>
+                            <button onclick="fastHandleAction('delete', '${deal.id}')" class="menu-item del"><i class="fa-solid fa-trash"></i> Delete</button>
+                        </div>
+                        
+                        <div class="city-tag">
+                            <i class="fa-solid fa-location-dot" style="color: #ff4757;"></i>
+                            <span>${deal.city || 'Rawalpindi'}</span>
+                        </div>
+                    </div>
+
+                    <div class="deal-body">
+                        <div class="deal-brand">${deal.brand || 'Local Merchant'}</div>
+                        <h4 class="deal-title">${deal.title}</h4>
+                        <div class="deal-location">
+                            <i class="fa-solid fa-map-pin" style="color: #71717a;"></i>
+                            <span>${deal.location || 'Twin Cities'}</span>
+                        </div>
+                        <div class="deal-footer">
+                            <div>
+                                <span class="old-price">Rs ${deal.originalPrice || '1000'}</span>
+                                <span class="new-price">Rs ${deal.price || '500'}</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="https://wa.me/${deal.whatsapp || '923001234567'}?text=Hi,%20I%20found%20your%20deal%20on%20PindiDeals:%20${encodeURIComponent(deal.title)}" target="_blank" class="whatsapp-btn">
+                                    <i class="fa-brands fa-whatsapp"><span>Chat</span></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function moveSlider(dealId, direction, event) {
+            if(event) event.stopPropagation();
+            const wrapper = document.getElementById(`slider-wrapper-${dealId}`);
+            if(!wrapper) return;
+            let currentIndex = parseInt(wrapper.getAttribute('data-index') || '0');
+            let total = parseInt(wrapper.getAttribute('data-total') || '1');
+            
+            currentIndex += direction;
+            if(currentIndex < 0) currentIndex = total - 1;
+            if(currentIndex >= total) currentIndex = 0;
+            
+            wrapper.setAttribute('data-index', currentIndex);
+            
+            for(let i=0; i<total; i++) {
+                const imgEl = document.getElementById(`card-img-${dealId}-${i}`);
+                const dotEl = document.getElementById(`dot-${dealId}-${i}`);
+                if(imgEl) {
+                    if(i === currentIndex) imgEl.classList.add('active');
+                    else imgEl.classList.remove('active');
+                }
+                if(dotEl) {
+                    if(i === currentIndex) dotEl.classList.add('active');
+                    else dotEl.classList.remove('active');
+                }
+            }
+        }
+
+        function renderPostView() {
+            const savedMerchant = JSON.parse(localStorage.getItem('pindideals_merchant') || 'null');
+            const defaultPhone = savedMerchant ? savedMerchant.phone : '';
+
+            return `
+                <div class="insta-box">
+                    <div class="insta-header">
+                        <h3 style="font-size: 16px; font-weight: 700; color: #fff;"><i class="fa-solid fa-circle-plus" style="color: #ff4757;"></i> Create New Deal</h3>
+                        <span style="font-size: 11px; color: #22c55e; font-weight: 600;"><i class="fa-solid fa-shield-check"></i> Instant Live</span>
+                    </div>
+
+                    <form onsubmit="handlePostDealSubmit(event)" style="display: flex; flex-direction: column; gap: 14px;">
+                        
+                        <div style="background: #222232; padding: 16px; border-radius: 14px; border: 2px dashed #3c3c58; text-align: center; position: relative; min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <input type="file" accept="image/*" multiple onchange="handleMultipleImages(event)" id="dealImageInput" style="position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; z-index: 5;">
+                            
+                            <div id="uploadPlaceholderContent" style="pointer-events: none; ${uploadedImagesBase64.length > 0 ? 'display: none;' : ''}">
+                                <div style="width: 50px; height: 50px; background: rgba(255,71,87,0.15); color: #ff4757; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 20px;">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <h4 style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px;">Tap to upload deal photos</h4>
+                                <p style="font-size: 11px; color: #8a8aa3;">Add up to 5 clear pictures (First selected will be main cover)</p>
+                            </div>
+
+                            <div id="previewContainerBox" style="width: 100%; height: 180px; position: relative; border-radius: 10px; overflow: hidden; background: #12121a; ${uploadedImagesBase64.length > 0 ? '' : 'display: none;'}">
+                                <img id="largePreviewImg" src="${uploadedImagesBase64.length > 0 ? uploadedImagesBase64[previewIndex] : ''}" style="width: 100%; height: 100%; object-fit: cover;" alt="Preview">
+                                
+                                ${uploadedImagesBase64.length > 1 ? `
+                                    <button type="button" onclick="movePreviewSlider(-1, event)" style="position: absolute; top: 50%; left: 8px; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; z-index: 10;"><i class="fa-solid fa-chevron-left" style="font-size: 10px;"></i></button>
+                                    <button type="button" onclick="movePreviewSlider(1, event)" style="position: absolute; top: 50%; right: 8px; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; z-index: 10;"><i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i></button>
+                                ` : ''}
+
+                                <button type="button" onclick="removePreviewImage(event)" style="position: absolute; top: 8px; right: 8px; background: #ef4444; color: #fff; border: none; border-radius: 50%; width: 26px; height: 26px; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 10;" title="Remove current image">×</button>
+                                
+                                <div style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.7); padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; color: #fff;">
+                                    Photo <span id="previewCurrentNum">${previewIndex + 1}</span> of <span id="previewTotalNum">${uploadedImagesBase64.length}</span> ${previewIndex === 0 ? '(Main)' : ''}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="insta-label">Deal Title / Offer Details *</label>
+                            <input type="text" id="postTitle" class="insta-input" required placeholder="e.g. 2 Zinger Burgers + Large Fries + 1.5L Drink">
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label class="insta-label">Brand / Shop Name *</label>
+                                <input type="text" id="postBrand" class="insta-input" required placeholder="e.g. KFC or Local Cafe">
+                            </div>
+                            <div>
+                                <label class="insta-label">Category *</label>
+                                <select id="postCategory" class="insta-input" style="background: #222232; color: #fff;">
+                                    <option value="Food">Food & Dining</option>
+                                    <option value="Fashion">Fashion & Clothing</option>
+                                    <option value="Electronics">Electronics & Gadgets</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label class="insta-label">City *</label>
+                                <select id="postCity" class="insta-input" style="background: #222232; color: #fff;">
+                                    <option value="Rawalpindi">Rawalpindi</option>
+                                    <option value="Islamabad">Islamabad</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="insta-label">Area / Location *</label>
+                                <input type="text" id="postLocation" class="insta-input" required placeholder="e.g. Saddar, F-7, Bahria">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label class="insta-label">Deal Price (Rs) *</label>
+                                <input type="number" id="postPrice" class="insta-input" oninput="autoCalculateDiscount()" required placeholder="499">
+                            </div>
+                            <div>
+                                <label class="insta-label">Old Price (Rs) *</label>
+                                <input type="number" id="postOriginalPrice" class="insta-input" oninput="autoCalculateDiscount()" required placeholder="999">
+                            </div>
+                            <div>
+                                <label class="insta-label">Discount *</label>
+                                <input type="text" id="postDiscount" class="insta-input" required placeholder="50% OFF" style="background: #2a1b1b; color: #ef4444; font-weight: 700; text-align: center;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="insta-label">Your WhatsApp Number (For Orders) *</label>
+                            <input type="text" id="postWhatsapp" class="insta-input" value="${defaultPhone}" required placeholder="923001234567">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 6px;">
+                            <button type="submit" style="flex: 1; background: #222232; color: #fff; border: 1px solid #323248; font-weight: 700; font-size: 13px; padding: 14px; border-radius: 12px; cursor: pointer;">Post Free Deal</button>
+                            <button type="button" onclick="triggerPaidTopDealPrompt()" style="flex: 1; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; border: none; font-weight: 700; font-size: 13px; padding: 14px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(34,197,94,0.3);"><i class="fa-solid fa-crown"></i> Top Deal (Rs 1k)</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        function renderExploreView() {
+            let filtered = filterDeals();
+            return `
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Explore All Deals</h3>
+                    <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 12px;">Browse verified promotions across Rawalpindi and Islamabad.</p>
+                    <div class="categories-scroll">${renderCategoryPills()}</div>
+                    <div>${filtered.length > 0 ? filtered.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #71717a; font-size: 12px; padding: 20px;">No deals found.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderSavedView() {
+            let savedDeals = deals.filter(d => savedDealIds.includes(d.id));
+            return `
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">Saved Deals</h3>
+                    <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 12px;">Your bookmarked offers for later.</p>
+                    <div>${savedDeals.length > 0 ? savedDeals.map(deal => renderDealCard(deal)).join('') : '<p style="text-align: center; color: #71717a; font-size: 12px; padding: 40px;">No saved deals yet.</p>'}</div>
+                </div>
+            `;
+        }
+
+        function renderProfileView() {
+            const merchant = JSON.parse(localStorage.getItem('pindideals_merchant') || 'null');
+            return `
+                <div class="profile-card">
+                    <div class="profile-avatar">PD</div>
+                    <h3 style="font-size: 16px; font-weight: 700; color: #fff;">PindiDeals Merchant Hub</h3>
+                    <p style="font-size: 11px; color: #a1a1aa; margin-top: 2px;">Rawalpindi & Islamabad Verified Partner</p>
+                    <div style="display: flex; justify-content: space-around; margin-top: 18px; padding-top: 16px; border-top: 1px solid #2a2a3c;">
+                        <div>
+                            <span style="display: block; font-size: 16px; font-weight: 700; color: #fff;">${savedDealIds.length}</span>
+                            <span style="font-size: 10px; color: #71717a;">Saved Deals</span>
+                        </div>
+                        <div>
+                            <span style="display: block; font-size: 16px; font-weight: 700; color: #ff4757;">${deals.length}</span>
+                            <span style="font-size: 10px; color: #71717a;">Live Platform Deals</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        function filterDeals() {
+            return deals.filter(deal => {
+                const matchesCity = selectedCity === 'All Twin Cities' || deal.city === selectedCity;
+                const matchesCat = selectedCategory === 'All' || deal.category === selectedCategory;
+                const matchesSearch = searchQuery === '' || deal.title.toLowerCase().includes(searchQuery.toLowerCase()) || deal.brand.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCity && matchesCat && matchesSearch;
+            });
+        }
+
+        function setCity(city) {
+            selectedCity = city;
+            document.getElementById('selectedCityBadge').innerText = city;
+            document.getElementById('currentLocationName').innerText = city === 'All Twin Cities' ? 'Rawalpindi / Islamabad' : city;
+            closeCitySelector();
+            renderApp();
+        }
+
+        function setCategory(cat) { selectedCategory = cat; renderApp(); }
+        function handleSearch(query) { searchQuery = query; renderApp(); }
+        function openCitySelector() { document.getElementById('cityModal').classList.remove('hidden'); }
+        function closeCitySelector() { document.getElementById('cityModal').classList.add('hidden'); }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+
+        function openZoomModal(imgSrc) {
+            const modal = document.getElementById('zoomModal');
+            const zoomedImg = document.getElementById('zoomedImg');
+            if(modal && zoomedImg) { zoomedImg.src = imgSrc; modal.classList.remove('hidden'); }
+        }
+        function closeZoomModal() { document.getElementById('zoomModal').classList.add('hidden'); }
+
+        function autoCalculateDiscount() {
+            const price = parseFloat(document.getElementById('postPrice').value);
+            const original = parseFloat(document.getElementById('postOriginalPrice').value);
+            const discountInput = document.getElementById('postDiscount');
+            if (!discountInput) return;
+            if (original && price && original > price) {
+                discountInput.value = `${Math.round(((original - price) / original) * 100)}% OFF`;
+            } else { discountInput.value = '0% OFF'; }
+        }
+
+        function toggleSaveDeal(id) {
+            if (savedDealIds.includes(id)) { savedDealIds = savedDealIds.filter(i => i !== id); }
+            else { savedDealIds.push(id); }
+            localStorage.setItem('pindideals_saved', JSON.stringify(savedDealIds));
+            renderApp();
+        }
+
+        function toggleCardMenu(dealId, event) {
+            event.stopPropagation();
+            document.querySelectorAll('.card-menu-dropdown').forEach(m => {
+                if(m.id !== 'menu-' + dealId) m.classList.remove('show');
+            });
+            const menu = document.getElementById('menu-' + dealId);
+            if(menu) menu.classList.toggle('show');
+        }
+
+        window.onclick = function() {
+            document.querySelectorAll('.card-menu-dropdown').forEach(m => m.classList.remove('show'));
+        }
+
+        function fastHandleAction(actionType, dealId) {
+            const deal = deals.find(d => d.id === dealId);
+            if (!deal) return;
+            if (actionType === 'delete') {
+                if (confirm('Kya aap waqai is deal ko delete karna chahte hain?')) {
+                    db.ref('deals/' + dealId).remove().then(() => alert('Deal delete ho gayi hai!'));
+                }
+            } else if (actionType === 'edit') {
+                switchView('post');
+                setTimeout(() => {
+                    document.getElementById('postTitle').value = deal.title;
+                    document.getElementById('postBrand').value = deal.brand;
+                    document.getElementById('postCategory').value = deal.category;
+                    document.getElementById('postCity').value = deal.city;
+                    document.getElementById('postLocation').value = deal.location;
+                    document.getElementById('postPrice').value = deal.price;
+                    document.getElementById('postOriginalPrice').value = deal.originalPrice;
+                    document.getElementById('postDiscount').value = deal.discount;
+                    document.getElementById('postWhatsapp').value = deal.whatsapp;
+                    
+                    if (deal.images && deal.images.length > 0) {
+                        uploadedImagesBase64 = [...deal.images];
+                        previewIndex = 0;
+                        updateLargePreviewUI();
+                    }
+                }, 200);
+            }
+        }
+
+        function handleMultipleImages(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+            if (uploadedImagesBase64.length >= 5) { alert('Maximum 5 images allowed!'); return; }
+            
+            for (let i = 0; i < files.length; i++) {
+                if (uploadedImagesBase64.length < 5) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedImagesBase64.push(e.target.result);
+                        if(uploadedImagesBase64.length === 1) previewIndex = 0;
+                        updateLargePreviewUI();
+                    };
+                    reader.readAsDataURL(files[i]);
+                }
+            }
+            event.target.value = '';
+        }
+
+        function movePreviewSlider(direction, event) {
+            if(event) event.stopPropagation();
+            if(uploadedImagesBase64.length === 0) return;
+            previewIndex += direction;
+            if(previewIndex < 0) previewIndex = uploadedImagesBase64.length - 1;
+            if(previewIndex >= uploadedImagesBase64.length) previewIndex = 0;
+            updateLargePreviewUI();
+        }
+
+        function removePreviewImage(event) {
+            if(event) event.stopPropagation();
+            if(uploadedImagesBase64.length === 0) return;
+            uploadedImagesBase64.splice(previewIndex, 1);
+            if(previewIndex >= uploadedImagesBase64.length) {
+                previewIndex = Math.max(0, uploadedImagesBase64.length - 1);
+            }
+            updateLargePreviewUI();
+        }
+
+        function updateLargePreviewUI() {
+            const placeholder = document.getElementById('uploadPlaceholderContent');
+            const previewBox = document.getElementById('previewContainerBox');
+            const largeImg = document.getElementById('largePreviewImg');
+            const currentNum = document.getElementById('previewCurrentNum');
+            const totalNum = document.getElementById('previewTotalNum');
+
+            if(!previewBox || !largeImg) return;
+
+            if(uploadedImagesBase64.length === 0) {
+                if(placeholder) placeholder.style.display = 'block';
+                previewBox.style.display = 'none';
+            } else {
+                if(placeholder) placeholder.style.display = 'none';
+                previewBox.style.display = 'block';
+                largeImg.src = uploadedImagesBase64[previewIndex];
+                if(currentNum) currentNum.innerText = previewIndex + 1;
+                if(totalNum) totalNum.innerText = uploadedImagesBase64.length;
+            }
+        }
+
+        function gatherDealFormData(isFeaturedValue) {
+            const title = document.getElementById('postTitle').value;
+            const brand = document.getElementById('postBrand').value;
+            const price = document.getElementById('postPrice').value;
+            const originalPrice = document.getElementById('postOriginalPrice').value;
+            const whatsapp = document.getElementById('postWhatsapp').value;
+
+            if(!title || !brand || !price || !originalPrice || !whatsapp) {
+                alert('Kripya zaroori fields (Title, Brand, Prices, WhatsApp) purri karein!');
+                return null;
+            }
+
+            const finalImages = uploadedImagesBase64.length > 0 ? uploadedImagesBase64 : ['https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&q=80'];
+
+            return {
+                title: title,
+                brand: brand,
+                category: document.getElementById('postCategory').value,
+                city: document.getElementById('postCity').value,
+                location: document.getElementById('postLocation').value,
+                price: price,
+                originalPrice: originalPrice,
+                discount: document.getElementById('postDiscount').value,
+                whatsapp: whatsapp,
+                pin: '1234',
+                images: finalImages,
+                isFeatured: isFeaturedValue,
+                createdAt: Date.now()
+            };
+        }
+
+        function handlePostDealSubmit(event) {
+            event.preventDefault();
+            const newDeal = gatherDealFormData(false);
+            if(!newDeal) return;
+
+            db.ref('deals').push(newDeal).then(() => {
+                alert('Mubarak ho! Deal free live publish ho gayi hai!');
+                uploadedImagesBase64 = [];
+                previewIndex = 0;
+                switchView('home');
+            }).catch(error => alert('Error: ' + error.message));
+        }
+
+        function triggerPaidTopDealPrompt() {
+            const newDeal = gatherDealFormData(true);
+            if(!newDeal) return;
+            pendingDealData = newDeal;
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function confirmPaidTopDeal() {
+            const tid = document.getElementById('paymentTidInput').value.trim();
+            if(!tid) { alert('Kripya EasyPaisa Transaction ID (TID) darj karein!'); return; }
+            
+            if(!pendingDealData) { alert('Session expired. Please re-fill form.'); return; }
+            pendingDealData.tid = tid;
+
+            db.ref('deals').push(pendingDealData).then(() => {
+                alert('Payment verification successful! Aapki deal Top Sponsored Banner par live ho gayi hai!');
+                closePaymentModal();
+                uploadedImagesBase64 = [];
+                previewIndex = 0;
+                pendingDealData = null;
+                switchView('home');
+            }).catch(error => alert('Error: ' + error.message));
+        }
+
+        window.onload = function() {
+            renderApp();
+            fetchDeals();
+        };
+    </script>
+</body>
+</html>
