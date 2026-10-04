@@ -1,0 +1,16 @@
+{
+  "name": "PakDeal",
+  "short_name": "PakDeal",
+  "description": "Local Deals and Discounts Across Pakistan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#12121a",
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "https://placehold.co/512x512/12121a/22c55e/png?text=PD&font=montserrat",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
